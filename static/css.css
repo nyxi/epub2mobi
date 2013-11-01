@@ -1,17 +1,26 @@
+body {
+  background-color:#262626;
+  font-family: 'Source Code Pro', sans-serif;
+}
+
 div#cdiv {
   height:100px;
   width:720px;
-  margin: 300px auto;
+  margin:300px auto;
+  background-color:#535353;
+  border-radius:15px;
 }
 
 .ifile {
-  font-size: 30px;
+  font-size:30px;
+  background-color:white;
 }
 
 .isubmit {
-  font-size: 30px;
+  font-size:30px;
 }
 
 center {
-  font-size: 24px;
+  font-size:24px;
+  color:#f7f7f7;
 }
