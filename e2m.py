@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
-# A simple app that lets you upload a epub, calls a
-# shell script to convert it to mobi and returns
+
+# A simple app that lets you upload a epub, calls
+# ebook-convert to convert it to mobi and returns
 # the mobi file
 
 import os
@@ -26,8 +27,8 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             pathnoext = '%s/%s' % (UPLOAD_FOLDER, filename[:-5])
-            call(['sh', 'conv.sh'])
-            return redirect('%s%s' % (pathnoext, '.mobi'))
+            call('ebook-convert %s.epub %s.mobi' % (pathnoext, pathnoext))
+            return redirect('%s.mobi' % (pathnoext))
 
     return render_template('main.jinja2')
 
