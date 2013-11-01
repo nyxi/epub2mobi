@@ -5,7 +5,7 @@
 # the mobi file
 
 import os
-from flask import Flask, request, redirect, render_template, url_for
+from flask import Flask, request, redirect, render_template
 from werkzeug import secure_filename
 from subprocess import call
 
@@ -28,6 +28,7 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             pathnoext = '%s/%s' % (UPLOAD_FOLDER, filename[:-5])
             call('ebook-convert %s.epub %s.mobi' % (pathnoext, pathnoext))
+            os.remove('%s.epub' % (pathnoext))
             return redirect('%s.mobi' % (pathnoext))
 
     return render_template('main.jinja2')
