@@ -9,12 +9,13 @@ from flask import Flask, request, redirect, render_template
 from werkzeug import secure_filename
 from subprocess import call
 
-UPLOAD_FOLDER = 'static/books'
-ALLOWED_EXTENSIONS = set(['epub'])
+UPLOAD_FOLDER = 'static/books' #Where we save the uploaded files
+ALLOWED_EXTENSIONS = set(['epub']) #Allowed file extensions for uploaded files
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# From the example in the Flask docs, checks file extension
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -25,14 +26,17 @@ def upload_file():
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            pathnoext = '%s/%s' % (UPLOAD_FOLDER, filename[:-5])
-            call('ebook-convert %s.epub %s.mobi' % (pathnoext, pathnoext))
-            os.remove('%s.epub' % (pathnoext))
-            return redirect('%s.mobi' % (pathnoext))
-
+            epubpath = '%s/%s' % (UPLOAD_FOLDER, filename)
+            mobipath = '%s/%s.mobi' % (UPLOAD_FOLDER, filename[:-5])
+            file.save(epubpath)
+            try:
+                call(['ebook-convert', epubpath, mobipath])
+                os.remove(epubpath)
+                return redirect(mobipath)
+            except:
+                return 'Something went wrong when trying to convert the book'
     return render_template('main.jinja2')
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
